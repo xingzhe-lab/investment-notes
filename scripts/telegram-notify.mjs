@@ -25,7 +25,7 @@ const articles = changed.map((file) => {
     .find((line) => line && !line.startsWith("#") && !line.startsWith(">") && !line.startsWith("---") && !line.startsWith("|"))
     ?.replace(/[*_`]/g, "")
     ?.slice(0, 180)
-  const slug = file.slice("content/".length, -".md".length).split(path.sep).join("/")
+  const slug = quartzSlug(file)
   return { title, paragraph, url: `${process.env.SITE_URL}/${encodeURI(slug)}` }
 })
 
@@ -46,4 +46,21 @@ for (const [index, article] of articles.entries()) {
 
 function escapeHtml(value) {
   return value.replace(/[&<>]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[char])
+}
+
+function quartzSlug(file) {
+  return file
+    .replace(/^content[\\/]/, "")
+    .replace(/\.md$/i, "")
+    .split(/[\\/]/)
+    .map((segment) =>
+      segment
+        .replace(/\s/g, "-")
+        .replace(/&/g, "-and-")
+        .replace(/%/g, "-percent")
+        .replace(/[?#]/g, "")
+        .replace(/[<>:"|*]/g, "")
+        .toLowerCase(),
+    )
+    .join("/")
 }
