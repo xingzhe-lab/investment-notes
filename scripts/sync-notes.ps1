@@ -16,8 +16,19 @@ if ($LASTEXITCODE -gt 7) {
 
 Push-Location (Join-Path $PSScriptRoot "..")
 try {
+  # GitHub 直连比本机的 SOCKS 代理更稳定；仅对本次同步临时覆盖代理。
+  $env:GIT_CONFIG_COUNT = "2"
+  $env:GIT_CONFIG_KEY_0 = "http.proxy"
+  $env:GIT_CONFIG_VALUE_0 = ""
+  $env:GIT_CONFIG_KEY_1 = "https.proxy"
+  $env:GIT_CONFIG_VALUE_1 = ""
   npx quartz sync
 }
 finally {
+  Remove-Item Env:GIT_CONFIG_COUNT -ErrorAction SilentlyContinue
+  Remove-Item Env:GIT_CONFIG_KEY_0 -ErrorAction SilentlyContinue
+  Remove-Item Env:GIT_CONFIG_VALUE_0 -ErrorAction SilentlyContinue
+  Remove-Item Env:GIT_CONFIG_KEY_1 -ErrorAction SilentlyContinue
+  Remove-Item Env:GIT_CONFIG_VALUE_1 -ErrorAction SilentlyContinue
   Pop-Location
 }
