@@ -9,6 +9,8 @@ const changed = batch?.files
   : execFileSync("git", ["diff", "--name-only", "HEAD^", "HEAD", "--", "content"], { encoding: "utf8" })
       .split(/\r?\n/)
       .filter((file) => file.endsWith(".md") && !file.endsWith(".gitkeep"))
+      // 易学频道由已登录的 Telegram Desktop 账号发布，不使用当前仓库的默认机器人频道。
+      .filter((file) => !file.startsWith("content/易学/") && !file.startsWith("content\\易学\\"))
       .slice(0, 5)
 
 if (changed.length === 0) {
