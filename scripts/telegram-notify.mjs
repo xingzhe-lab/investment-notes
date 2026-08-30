@@ -9,7 +9,7 @@ const batch = process.env.TELEGRAM_BATCH_ALL === "易学"
     ? JSON.parse(readFileSync(batchManifest, "utf8"))
     : undefined
 const changed = batch?.all === "易学"
-    ? execFileSync("git", ["ls-files", "--", "content/易学"], { encoding: "utf8" })
+    ? execFileSync("git", ["-c", "core.quotePath=false", "ls-files", "--", "content/易学"], { encoding: "utf8" })
       .split(/\r?\n/)
       .filter((file) => file.endsWith(".md"))
   : batch?.files
