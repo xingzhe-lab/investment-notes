@@ -3,9 +3,13 @@ import { existsSync, readFileSync } from "node:fs"
 import path from "node:path"
 
 const batchManifest = "content/.telegram-publish-batch.json"
-const batch = existsSync(batchManifest) ? JSON.parse(readFileSync(batchManifest, "utf8")) : undefined
+const batch = process.env.TELEGRAM_BATCH_ALL === "易学"
+  ? { all: "易学" }
+  : existsSync(batchManifest)
+    ? JSON.parse(readFileSync(batchManifest, "utf8"))
+    : undefined
 const changed = batch?.all === "易学"
-  ? execFileSync("git", ["ls-files", "content/易学", "content/易学/*.md"], { encoding: "utf8", shell: true })
+    ? execFileSync("git", ["ls-files", "--", "content/易学"], { encoding: "utf8" })
       .split(/\r?\n/)
       .filter((file) => file.endsWith(".md"))
   : batch?.files
