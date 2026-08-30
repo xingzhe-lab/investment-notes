@@ -19,6 +19,14 @@ if (!botInfoResponse.ok) throw new Error(`无法读取 Telegram 机器人信息�
 const botInfo = await botInfoResponse.json()
 console.log(`发布机器人：@${botInfo.result.username}`)
 
+const updatesResponse = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getUpdates?allowed_updates=%5B%22channel_post%22%2C%22my_chat_member%22%5D`)
+if (!updatesResponse.ok) throw new Error(`无法读取 Telegram 更新：${await updatesResponse.text()}`)
+const updates = await updatesResponse.json()
+for (const update of updates.result ?? []) {
+  const chat = update.channel_post?.chat ?? update.my_chat_member?.chat
+  if (chat) console.log(`频道识别：${chat.title ?? ""} ${chat.id}`)
+}
+
 if (changed.length === 0) {
   console.log("没有文章变更，跳过 Telegram 通知。")
   process.exit(0)
