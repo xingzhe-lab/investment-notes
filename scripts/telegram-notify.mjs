@@ -22,10 +22,16 @@ console.log(`发布机器人：@${botInfo.result.username}`)
 const updatesResponse = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getUpdates?allowed_updates=%5B%22channel_post%22%2C%22my_chat_member%22%5D`)
 if (!updatesResponse.ok) throw new Error(`无法读取 Telegram 更新：${await updatesResponse.text()}`)
 const updates = await updatesResponse.json()
+const detectedYixueChatId = (updates.result ?? [])
+  .map((update) => update.channel_post?.chat ?? update.my_chat_member?.chat)
+  .find((chat) => chat?.title === "易学")?.id
 for (const update of updates.result ?? []) {
   const chat = update.channel_post?.chat ?? update.my_chat_member?.chat
   if (chat) console.log(`频道识别：${chat.title ?? ""} ${chat.id}`)
 }
+
+const targetChatId = detectedYixueChatId ?? process.env.TELEGRAM_CHAT_ID
+if (detectedYixueChatId) console.log(`使用易学频道 chat ID：${detectedYixueChatId}`)
 
 if (changed.length === 0) {
   console.log("没有文章变更，跳过 Telegram 通知。")
@@ -52,7 +58,7 @@ for (const [index, article] of articles.entries()) {
   const response = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text, parse_mode: "HTML", disable_web_page_preview: false }),
+    body: JSON.stringify({ chat_id: targetChatId, text, parse_mode: "HTML", disable_web_page_preview: false }),
   })
 
   if (!response.ok) throw new Error(`Telegram 第 ${index + 1} 篇通知失败：${await response.text()}`)
