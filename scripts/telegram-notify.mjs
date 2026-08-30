@@ -13,6 +13,12 @@ const changed = batch?.files
       .filter((file) => !file.startsWith("content/易学/") && !file.startsWith("content\\易学\\"))
       .slice(0, 5)
 
+// 仅记录机器人的公开用户名，便于将同一机器人授予新频道发帖权限；不会输出令牌。
+const botInfoResponse = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getMe`)
+if (!botInfoResponse.ok) throw new Error(`无法读取 Telegram 机器人信息：${await botInfoResponse.text()}`)
+const botInfo = await botInfoResponse.json()
+console.log(`发布机器人：@${botInfo.result.username}`)
+
 if (changed.length === 0) {
   console.log("没有文章变更，跳过 Telegram 通知。")
   process.exit(0)
