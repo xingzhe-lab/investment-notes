@@ -4,7 +4,11 @@ import path from "node:path"
 
 const batchManifest = "content/.telegram-publish-batch.json"
 const batch = existsSync(batchManifest) ? JSON.parse(readFileSync(batchManifest, "utf8")) : undefined
-const changed = batch?.files
+const changed = batch?.all === "易学"
+  ? execFileSync("git", ["ls-files", "content/易学", "content/易学/*.md"], { encoding: "utf8", shell: true })
+      .split(/\r?\n/)
+      .filter((file) => file.endsWith(".md"))
+  : batch?.files
   ? batch.files
   : execFileSync("git", ["diff", "--name-only", "HEAD^", "HEAD", "--", "content"], { encoding: "utf8" })
       .split(/\r?\n/)
