@@ -1,0 +1,25 @@
+name: 直接发布易学文章到 Telegram
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: 直接发布易学文章
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BATCH_ALL: 易学
+          SITE_URL: https://xingzhe-lab.github.io/investment-notes
+        run: node scripts/telegram-notify.mjs
