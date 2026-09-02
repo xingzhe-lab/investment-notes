@@ -43,6 +43,7 @@ jobs:
         uses: actions/deploy-pages@v4
 
   notify-telegram:
+    if: ${{ false }}
     needs: deploy
     runs-on: ubuntu-latest
     steps:
