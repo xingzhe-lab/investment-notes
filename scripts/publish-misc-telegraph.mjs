@@ -4,12 +4,16 @@ const token = process.env.TELEGRAM_BOT_TOKEN
 const messagesPath = process.env.TELEGRAM_MESSAGES_PATH ?? "static/misc-20260902/messages.json"
 const mode = process.env.PUBLISH_MODE ?? "discover"
 const startIndex = Number.parseInt(process.env.START_INDEX ?? "1", 10)
+const expectedBotUsername = process.env.EXPECTED_BOT_USERNAME ?? "zawen_publish_bot"
 
 if (!token) throw new Error("缺少 TELEGRAM_BOT_TOKEN")
 if (!Number.isInteger(startIndex) || startIndex < 1) throw new Error("START_INDEX 必须是正整数")
 
 const bot = await telegram("getMe")
 console.log(`发布机器人：@${bot.result.username}`)
+if (bot.result.username !== expectedBotUsername) {
+  throw new Error(`机器人不匹配：要求 @${expectedBotUsername}，当前为 @${bot.result.username}`)
+}
 
 const updates = await telegram("getUpdates", {
   allowed_updates: JSON.stringify(["channel_post", "my_chat_member"]),
