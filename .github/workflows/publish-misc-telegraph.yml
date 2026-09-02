@@ -1,0 +1,43 @@
+name: 发布 Telegraph 杂文到 Telegram
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 发布模式
+        required: true
+        type: choice
+        default: discover
+        options:
+          - discover
+          - test
+          - all
+      start_index:
+        description: 从清单第几篇开始
+        required: true
+        default: "1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-misc-telegraph
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: 发布到杂文频道
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          PUBLISH_MODE: ${{ inputs.mode }}
+          START_INDEX: ${{ inputs.start_index }}
+        run: node scripts/publish-misc-telegraph.mjs
