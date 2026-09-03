@@ -16,6 +16,10 @@ on:
         description: 从清单第几篇开始
         required: true
         default: "1"
+      messages_path:
+        description: 仓库内的发布清单路径
+        required: true
+        default: "static/misc-20260902/messages.json"
 
 permissions:
   contents: read
@@ -40,4 +44,5 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           PUBLISH_MODE: ${{ inputs.mode }}
           START_INDEX: ${{ inputs.start_index }}
+          TELEGRAM_MESSAGES_PATH: ${{ inputs.messages_path }}
         run: node scripts/publish-misc-telegraph.mjs
