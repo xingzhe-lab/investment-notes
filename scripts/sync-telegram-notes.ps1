@@ -142,7 +142,8 @@ $messages = foreach ($item in $publishable) {
     index = $publishable.IndexOf($item) + 1
     title = $title
     page_url = $url
-    text = "$title`n`n$summary`n`n阅读全文：$url"
+    format = "title_link"
+    text = $title
   }
 }
 ConvertTo-Json -InputObject @($messages) -Depth 4 | Set-Content -LiteralPath $manifest -Encoding utf8

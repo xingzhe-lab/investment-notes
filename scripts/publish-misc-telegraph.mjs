@@ -46,13 +46,27 @@ if (selected.length === 0) throw new Error(`没有找到从第 ${startIndex} 篇
 console.log(`准备向“杂文”频道发布 ${selected.length} 篇，起始序号 ${startIndex}。`)
 
 for (const [offset, item] of selected.entries()) {
+  const titleLink = item.format === "title_link" && item.title && item.page_url
+  const messageText = titleLink
+    ? `<a href="${escapeHtmlAttribute(item.page_url)}">${escapeHtml(item.title)}</a>`
+    : item.text
   await telegram("sendMessage", {
     chat_id: target.id,
-    text: item.text,
-    disable_web_page_preview: false,
+    text: messageText,
+    ...(titleLink
+      ? { parse_mode: "HTML", link_preview_options: { is_disabled: true } }
+      : { disable_web_page_preview: false }),
   })
   console.log(`已发布 ${offset + 1}/${selected.length}，清单序号 ${item.index}`)
   if (offset < selected.length - 1) await new Promise((resolve) => setTimeout(resolve, 3200))
+}
+
+function escapeHtml(value) {
+  return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+}
+
+function escapeHtmlAttribute(value) {
+  return escapeHtml(value).replaceAll('"', "&quot;")
 }
 
 async function telegram(method, body) {

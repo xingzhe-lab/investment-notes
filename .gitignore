@@ -1,6 +1,8 @@
 .DS_Store
 .gitignore
 node_modules
+__pycache__/
+*.py[cod]
 public
 prof
 tsconfig.tsbuildinfo
