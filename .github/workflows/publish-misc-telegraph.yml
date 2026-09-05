@@ -41,7 +41,7 @@ jobs:
           node-version: 24
       - name: 发布到杂文频道
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_ZAWEN_BOT_TOKEN }}
           PUBLISH_MODE: ${{ inputs.mode }}
           START_INDEX: ${{ inputs.start_index }}
           TELEGRAM_MESSAGES_PATH: ${{ inputs.messages_path }}
