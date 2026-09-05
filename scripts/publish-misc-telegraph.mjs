@@ -1,5 +1,9 @@
 import { readFileSync } from "node:fs"
 
+let currentManifestIndex = "初始化"
+process.on("uncaughtException", reportFatalError)
+process.on("unhandledRejection", reportFatalError)
+
 const token = process.env.TELEGRAM_BOT_TOKEN
 const messagesPath = process.env.TELEGRAM_MESSAGES_PATH ?? "static/misc-20260902/messages.json"
 const mode = process.env.PUBLISH_MODE ?? "discover"
@@ -46,6 +50,7 @@ if (selected.length === 0) throw new Error(`没有找到从第 ${startIndex} 篇
 console.log(`准备向“杂文”频道发布 ${selected.length} 篇，起始序号 ${startIndex}。`)
 
 for (const [offset, item] of selected.entries()) {
+  currentManifestIndex = item.index
   const titleLink = item.format === "title_link" && item.title && item.page_url
   const messageText = titleLink
     ? `<a href="${escapeHtmlAttribute(item.page_url)}">${escapeHtml(item.title)}</a>`
@@ -59,6 +64,16 @@ for (const [offset, item] of selected.entries()) {
   })
   console.log(`已发布 ${offset + 1}/${selected.length}，清单序号 ${item.index}`)
   if (offset < selected.length - 1) await new Promise((resolve) => setTimeout(resolve, 3200))
+}
+
+function reportFatalError(error) {
+  const message = error instanceof Error ? error.message : String(error)
+  const safeMessage = message
+    .replaceAll("%", "%25")
+    .replaceAll("\r", "%0D")
+    .replaceAll("\n", "%0A")
+  console.error(`::error title=Telegram 发布失败（清单序号 ${currentManifestIndex}）::${safeMessage}`)
+  process.exit(1)
 }
 
 function escapeHtml(value) {
