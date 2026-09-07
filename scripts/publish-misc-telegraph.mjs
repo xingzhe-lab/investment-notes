@@ -9,6 +9,7 @@ const messagesPath = process.env.TELEGRAM_MESSAGES_PATH ?? "static/misc-20260902
 const mode = process.env.PUBLISH_MODE ?? "discover"
 const startIndex = Number.parseInt(process.env.START_INDEX ?? "1", 10)
 const expectedBotUsername = process.env.EXPECTED_BOT_USERNAME ?? "zawen_publish_bot"
+const configuredChatId = process.env.TELEGRAM_CHAT_ID?.trim()
 
 if (!token) throw new Error("缺少 TELEGRAM_BOT_TOKEN")
 if (!Number.isInteger(startIndex) || startIndex < 1) throw new Error("START_INDEX 必须是正整数")
@@ -19,21 +20,27 @@ if (bot.result.username !== expectedBotUsername) {
   throw new Error(`机器人不匹配：要求 @${expectedBotUsername}，当前为 @${bot.result.username}`)
 }
 
-const updates = await telegram("getUpdates", {
-  allowed_updates: JSON.stringify(["channel_post", "my_chat_member"]),
-})
-const chats = new Map()
-for (const update of updates.result ?? []) {
-  const chat = update.channel_post?.chat ?? update.my_chat_member?.chat
-  if (chat?.id) chats.set(String(chat.id), chat)
-}
-for (const chat of chats.values()) {
-  console.log(`频道识别：${chat.title ?? ""} ${chat.id}`)
-}
+let target
+if (configuredChatId) {
+  target = { id: configuredChatId, title: "杂文" }
+  console.log(`使用已配置的“杂文”频道：${configuredChatId}`)
+} else {
+  const updates = await telegram("getUpdates", {
+    allowed_updates: JSON.stringify(["channel_post", "my_chat_member"]),
+  })
+  const chats = new Map()
+  for (const update of updates.result ?? []) {
+    const chat = update.channel_post?.chat ?? update.my_chat_member?.chat
+    if (chat?.id) chats.set(String(chat.id), chat)
+  }
+  for (const chat of chats.values()) {
+    console.log(`频道识别：${chat.title ?? ""} ${chat.id}`)
+  }
 
-const target = [...chats.values()].find((chat) => chat.title === "杂文")
-if (!target) {
-  throw new Error("未在机器人更新中识别到“杂文”频道。请在频道中发一条新消息后重试。")
+  target = [...chats.values()].find((chat) => chat.title === "杂文")
+  if (!target) {
+    throw new Error("未在机器人更新中识别到“杂文”频道，且未配置 TELEGRAM_CHAT_ID。")
+  }
 }
 console.log(`已锁定“杂文”频道：${target.id}`)
 

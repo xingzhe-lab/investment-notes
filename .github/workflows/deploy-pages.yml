@@ -53,6 +53,7 @@ jobs:
       - name: 通知频道
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_ZAWEN_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: "-1004448922086"
           TELEGRAM_MESSAGES_PATH: static/telegram-notes/messages.json
           PUBLISH_MODE: all
           START_INDEX: "1"
