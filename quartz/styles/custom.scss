@@ -1,3 +1,56 @@
 @use "./variables.scss" as *;
 
 // put your custom CSS here!
+
+// Improve readability across every rendered Markdown article without enlarging
+// the surrounding navigation and sidebars.
+.center > article {
+  font-size: 1.18rem;
+  line-height: 1.85;
+
+  > h1 {
+    font-size: 2.35rem;
+    line-height: 1.35;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    line-height: 1.4;
+  }
+
+  h3 {
+    font-size: 1.45rem;
+    line-height: 1.45;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-size: 1.2rem;
+    line-height: 1.5;
+  }
+
+  pre > code {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+}
+
+@media all and ($mobile) {
+  .center > article {
+    font-size: 1.12rem;
+    line-height: 1.8;
+
+    > h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+    }
+
+    h3 {
+      font-size: 1.35rem;
+    }
+  }
+}
