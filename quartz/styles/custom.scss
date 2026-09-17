@@ -53,4 +53,18 @@
       font-size: 1.35rem;
     }
   }
+
+  // Quartz gives paragraphs and list items a fixed 1.6rem line height in its
+  // base stylesheet. Override it only for the complete-book archive so 20px
+  // mobile body text renders at an effective line height of about 40px.
+  body[data-slug^="投资书库全文/"] .center > article {
+    p,
+    li,
+    blockquote,
+    tbody,
+    td,
+    th {
+      line-height: 2;
+    }
+  }
 }
