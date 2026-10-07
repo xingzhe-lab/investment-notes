@@ -1,4 +1,4 @@
-const expectedBot = "touzizhidao_publish_bot"
+const expectedBots = new Set(["touzizhidao_publish_bot", "xingzhe_invest_notes_bot"])
 const expectedChannel = "投资之道"
 const token = process.env.TELEGRAM_BOT_TOKEN
 const title = process.env.ARTICLE_TITLE
@@ -10,7 +10,7 @@ const apiBase = `https://api.telegram.org/bot${token}`
 const botResponse = await fetch(`${apiBase}/getMe`)
 if (!botResponse.ok) throw new Error("无法核验 Telegram 机器人")
 const bot = (await botResponse.json()).result
-if (bot.username !== expectedBot) {
+if (!expectedBots.has(bot.username)) {
   throw new Error(`机器人身份不符：@${bot.username ?? "unknown"}`)
 }
 
