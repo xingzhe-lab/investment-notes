@@ -1,0 +1,33 @@
+name: 发布标题链接到投资之道
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 文章标题
+        required: true
+        type: string
+      page_url:
+        description: GitHub Pages 文章链接
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: 核验频道并发布标题链接
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ARTICLE_TITLE: ${{ inputs.title }}
+          ARTICLE_URL: ${{ inputs.page_url }}
+        run: node scripts/telegram-title-notify.mjs
