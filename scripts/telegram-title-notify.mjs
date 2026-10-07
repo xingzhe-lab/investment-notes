@@ -1,6 +1,7 @@
 const expectedBots = new Set(["touzizhidao_publish_bot", "xingzhe_invest_notes_bot"])
 const expectedChannel = "投资之道"
 const token = process.env.TELEGRAM_BOT_TOKEN
+const configuredChatId = process.env.TELEGRAM_CHAT_ID
 const title = process.env.ARTICLE_TITLE
 const pageUrl = process.env.ARTICLE_URL
 
@@ -25,9 +26,14 @@ const chats = updates.flatMap((update) =>
     .filter(Boolean),
 )
 const channelIds = [...new Set(chats.filter((chat) => chat.title === expectedChannel).map((chat) => String(chat.id)))]
-if (channelIds.length !== 1) throw new Error(`频道匹配数异常：${channelIds.length}`)
+if (channelIds.length > 1) throw new Error(`频道匹配数异常：${channelIds.length}`)
 
-const chatId = channelIds[0]
+const chatId = channelIds[0] ?? configuredChatId
+if (!chatId) throw new Error("无法定位目标频道")
+const chatResponse = await fetch(`${apiBase}/getChat?chat_id=${encodeURIComponent(chatId)}`)
+if (!chatResponse.ok) throw new Error("无法核验目标频道")
+const chat = (await chatResponse.json()).result
+if (chat.title !== expectedChannel) throw new Error(`频道名称不符：${chat.title ?? "unknown"}`)
 const membershipResponse = await fetch(`${apiBase}/getChatMember`, {
   method: "POST",
   headers: { "content-type": "application/json" },

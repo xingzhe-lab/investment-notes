@@ -28,6 +28,7 @@ jobs:
       - name: 核验频道并发布标题链接
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ARTICLE_TITLE: ${{ inputs.title }}
           ARTICLE_URL: ${{ inputs.page_url }}
         run: node scripts/telegram-title-notify.mjs
