@@ -56,6 +56,6 @@ jobs:
           TELEGRAM_CHAT_ID: "-1004448922086"
           TELEGRAM_MESSAGES_PATH: static/telegram-notes/messages.json
           PUBLISH_MODE: all
-          START_INDEX: "21"
+          START_INDEX: "1"
           EXPECTED_BOT_USERNAME: zawen_publish_bot
         run: node scripts/publish-misc-telegraph.mjs
