@@ -92,14 +92,23 @@ function escapeHtmlAttribute(value) {
 }
 
 async function telegram(method, body) {
-  const response = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(body ?? {}),
-  })
-  const payload = await response.json()
-  if (!response.ok || !payload.ok) {
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    const response = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body ?? {}),
+    })
+    const payload = await response.json()
+    if (response.ok && payload.ok) return payload
+
+    const retryAfter = Number(payload?.parameters?.retry_after)
+    if (response.status === 429 && Number.isFinite(retryAfter) && attempt < 5) {
+      const waitSeconds = Math.max(1, retryAfter + 1)
+      console.log(`Telegram 限流，等待 ${waitSeconds} 秒后重试（${attempt}/5）。`)
+      await new Promise((resolve) => setTimeout(resolve, waitSeconds * 1000))
+      continue
+    }
+
     throw new Error(`Telegram ${method} 失败：${JSON.stringify(payload)}`)
   }
-  return payload
 }
