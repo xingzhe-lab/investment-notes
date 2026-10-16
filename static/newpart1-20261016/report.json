@@ -1,0 +1,26 @@
+{
+  "converted_markdown": 79,
+  "selected_markdown": 76,
+  "source_duplicates_skipped": 2,
+  "existing_duplicates_skipped": 1,
+  "referenced_images": 41,
+  "source_duplicates": [
+    {
+      "keep": "红楼梦里有哪些细节戳中了你_ - 王慧侦 的回答",
+      "skip": "红楼梦里有哪些细节戳中了你_ - 王慧侦 的回答 (1)",
+      "reason": "同标题副本或正文相同"
+    },
+    {
+      "keep": "红楼梦里有哪些细节戳中了你_ - 王慧侦 的回答",
+      "skip": "红楼梦里有哪些细节戳中了你_ - 王慧侦 的回答 (2)",
+      "reason": "同标题副本或正文相同"
+    }
+  ],
+  "existing_duplicates": [
+    {
+      "title": "说说癸酉本红楼梦中有哪些让你觉得精彩甚至震撼的地方？ - 知乎用户 的回答",
+      "reason": "标题已存在",
+      "existing": ""
+    }
+  ]
+}
