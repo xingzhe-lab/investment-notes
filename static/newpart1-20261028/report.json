@@ -1,0 +1,20 @@
+{
+  "converted_markdown": 80,
+  "selected_markdown": 78,
+  "source_duplicates_skipped": 2,
+  "existing_duplicates_skipped": 0,
+  "referenced_images": 60,
+  "source_duplicates": [
+    {
+      "keep": "为什么这波 AI 浪潮没有带来大量的就业岗位_ - 酱紫君 的回答",
+      "skip": "为什么这波 AI 浪潮没有带来大量的就业岗位_ - 酱紫君 的回答 (1)",
+      "reason": "同标题副本或正文相同"
+    },
+    {
+      "keep": "怎么看待现在的中学生过得极其压抑？ - 江湖绝学 的回答",
+      "skip": "怎么看待现在的中学生过得极其压抑？ - 江湖绝学 的回答",
+      "reason": "同标题副本或正文相同"
+    }
+  ],
+  "existing_duplicates": []
+}
